@@ -13,7 +13,7 @@
 		pkgs = eachSystem (system: nixpkgs.legacyPackages.${system});
 	in {
 		packages = eachSystem (system: {
-			default = (import ./nix/default.nix { inherit self; pkgs = pkgs.${system}; });
+#			default = (import ./nix/default.nix { inherit self; pkgs = pkgs.${system}; });
 			gabarito = (import ./nix/gabarito.nix { pkgs = pkgs.${system}; });
 			rubik = (import ./nix/rubik.nix { pkgs = pkgs.${system}; });
 #			microtex = (import ./nix/microtex.nix { pkgs = pkgs.${system}; });
