@@ -7,6 +7,8 @@ in pkgs.stdenv.mkDerivation {
 
 	src = ../.;
 
+	dontWrapQtApps = true;
+
 	buildInputs = with pkgs; [
 		# Audio
 		libdbusmenu-gtk3
