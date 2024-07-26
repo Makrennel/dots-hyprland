@@ -44,12 +44,12 @@ in {
 		wayland.windowManager.hyprland.enable = true;
 		wayland.windowManager.hyprland.settings = lib.mkIf config.illogical-impulse.generate-hyprland-conf {
 			"source" = [
-				"${./hyprland/env.conf}"
-				"${./hyprland/exec.conf}"
-				"${./hyprland/general.conf}"
-				"${./hyprland/rules.conf}"
-				"${./hyprland/colors.conf}"
-				"${./hyprland/keybinds.conf}"
+				"${../.config/hypr/hyprland/env.conf}"
+				"${../.config/hypr/hyprland/exec.conf}"
+				"${../.config/hypr/hyprland/general.conf}"
+				"${../.config/hypr/hyprland/rules.conf}"
+				"${../.config/hypr/hyprland/colors.conf}"
+				"${../.config/hypr/hyprland/keybinds.conf}"
 
 				"~/${config.illogical-impulse.configHome}/hypr/custom/env.conf"
 				"~/${config.illogical-impulse.configHome}/hypr/custom/exec.conf"
