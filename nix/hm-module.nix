@@ -34,15 +34,14 @@ in {
 	};
 
 	config = lib.mkIf config.illogical-impulse.enable {
-		wayland.windowManager.hyprland.enable = true;
-
- 		home.file = ( lib.lists.foldl (a: b: a // b) { } (
+ 		home.file = (lib.lists.foldl (a: b: a // b) { } (
 			map (path: if config.illogical-impulse.configFiles."${path}".enable
 				then { "${config.illogical-impulse.configHome}/${path}".source = "${../.config}/${path}"; }
 				else { "${config.illogical-impulse.configHome}/${path}" = {}; }
 			) configFiles)
 		);
 
+		wayland.windowManager.hyprland.enable = true;
 		wayland.windowManager.hyprland.settings = lib.mkIf config.illogical-impulse.generate-hyprland-conf {
 			"source" = [
 				"hyprland/env.conf"
@@ -61,9 +60,16 @@ in {
 		};
 
 		programs.ags.enable = true;
+		programs.ags.extraPackages = with pkgs; [
+			accountsservice
+			gtksourceview
+			gnome.gvfs
+			webkitgtk
+		];
 
-		# This has to be of type path.... but can't use absolute paths on pure eval mode....
-#		programs.ags.configDir = builtins.toPath "${config.illogical-impulse.configHome}/ags";
+		home.packages = [
+			self.packages.${pkgs.stdenv.hostPlatform.system}.default
+		];
 	};
 
 }
