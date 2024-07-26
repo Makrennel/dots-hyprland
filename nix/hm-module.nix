@@ -67,7 +67,7 @@ in {
 			webkitgtk
 		];
 
-		home.packages = [
+		home.packages = with pkgs; [
 			# Audio
 			libdbusmenu-gtk3
 			pavucontrol
