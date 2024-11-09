@@ -23,21 +23,15 @@ in {
 		generate-hyprland-conf = lib.mkOption {
 			type = lib.types.bool;
 			default = true;
-			description = "Allows the user to disable default creation of hypr/hyprland.conf file so that wayland.windowManager.hyprland.settings can be used directly without illogical-impulse's conf.";
-		};
-
-		configHome = lib.mkOption {
-			type = lib.types.str;
-			default = ".config";
-			description = "The config directory relative to your home directory to source files to - usually should be the same as XDG_CONFIG_HOME.";
+			description = "Allows the user to disable default creation of hypr/hyprland.conf file so that wayland.windowManager.hyprland.settings can be used directly without illogical-impulse's conf interfering.";
 		};
 	};
 
 	config = lib.mkIf config.illogical-impulse.enable {
  		home.file = (lib.lists.foldl (a: b: a // b) { } (
 			map (path: if config.illogical-impulse.configFiles."${path}".enable
-				then { "${config.illogical-impulse.configHome}/${path}".source = "${../.config}/${path}"; }
-				else { "${config.illogical-impulse.configHome}/${path}" = {}; }
+				then { "${config.xdg.configHome}/${path}".source = "${../.config}/${path}"; }
+				else { "${config.xdg.configHome}/${path}" = {}; }
 			) configFiles)
 		);
 
@@ -51,11 +45,11 @@ in {
 				"${../.config/hypr/hyprland/colors.conf}"
 				"${../.config/hypr/hyprland/keybinds.conf}"
 
-				"~/${config.illogical-impulse.configHome}/hypr/custom/env.conf"
-				"~/${config.illogical-impulse.configHome}/hypr/custom/execs.conf"
-				"~/${config.illogical-impulse.configHome}/hypr/custom/general.conf"
-				"~/${config.illogical-impulse.configHome}/hypr/custom/rules.conf"
-				"~/${config.illogical-impulse.configHome}/hypr/custom/keybinds.conf"
+				"~/${config.xdg.configHome}/hypr/custom/env.conf"
+				"~/${config.xdg.configHome}/hypr/custom/execs.conf"
+				"~/${config.xdg.configHome}/hypr/custom/general.conf"
+				"~/${config.xdg.configHome}/hypr/custom/rules.conf"
+				"~/${config.xdg.configHome}/hypr/custom/keybinds.conf"
 			];
 		};
 
