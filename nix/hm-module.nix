@@ -10,44 +10,31 @@ in {
 
   options.illogical-impulse = {
     enable = lib.mkEnableOption "illogical-impulse";
-
-    configFiles = builtins.listToAttrs (builtins.map (name: lib.nameValuePair name {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Allows user to disable sourcing of config file ${name} so that a user-supplied version can be manually sourced instead";
-      };
-    }) configFiles);
   };
 
   config = lib.mkIf config.illogical-impulse.enable {
-    home.file = (lib.lists.foldl (a: b: a // b) { } (
-      lib.lists.forEach configFiles (path:
-        if config.illogical-impulse.configFiles."${path}".enable && ${path} != "hypr/hyprland.conf"
-          then { "${config.xdg.configHome}/${path}".source = "${../.config}/${path}"; }
-          #else { "${config.xdg.configHome}/${path}" = {}; }
-          else {}
-      )
+    xdg.configFile = (lib.lists.foldl (a: b: a // b) { } (
+      lib.lists.forEach configFiles (path: ${path} = {
+        enable = lib.mkDefault true;
+        source = lib.mkDefault "${../.config}/${path}";
+      };)
     ));
     
-
     wayland.windowManager.hyprland.enable = true;
-    wayland.windowManager.hyprland.settings = lib.mkIf config.illogical-impulse.configFiles."${config.xdg.configHome}/hypr/hyprland.conf" {
-      "source" = [
-        "${../.config/hypr/hyprland/env.conf}"
-        "${../.config/hypr/hyprland/execs.conf}"
-        "${../.config/hypr/hyprland/general.conf}"
-        "${../.config/hypr/hyprland/rules.conf}"
-        "${../.config/hypr/hyprland/colors.conf}"
-        "${../.config/hypr/hyprland/keybinds.conf}"
+    wayland.windowManager.hyprland.settings."source" = lib.mkDefault [
+      "${config.xdg.configHome}/hypr/hyprland/env.conf"
+      "${config.xdg.configHome}/hypr/hyprland/execs.conf"
+      "${config.xdg.configHome}/hypr/hyprland/general.conf"
+      "${config.xdg.configHome}/hypr/hyprland/rules.conf"
+      "${config.xdg.configHome}/hypr/hyprland/colors.conf"
+      "${config.xdg.configHome}/hypr/hyprland/keybinds.conf"
 
-        "~/${config.xdg.configHome}/hypr/custom/env.conf"
-        "~/${config.xdg.configHome}/hypr/custom/execs.conf"
-        "~/${config.xdg.configHome}/hypr/custom/general.conf"
-        "~/${config.xdg.configHome}/hypr/custom/rules.conf"
-        "~/${config.xdg.configHome}/hypr/custom/keybinds.conf"
-      ];
-    };
+      "${config.xdg.configHome}/hypr/custom/env.conf"
+      "${config.xdg.configHome}/hypr/custom/execs.conf"
+      "${config.xdg.configHome}/hypr/custom/general.conf"
+      "${config.xdg.configHome}/hypr/custom/rules.conf"
+      "${config.xdg.configHome}/hypr/custom/keybinds.conf"
+    ];
 
     programs.ags.enable = true;
     programs.ags.extraPackages = with pkgs; [
